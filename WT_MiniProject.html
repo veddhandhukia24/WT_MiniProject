@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MotoVia — Indian Car Marketplace </title>
+  <meta name="description" content="MotoVia demo — colorful marketplace with 32 popular Indian cars.">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --glass: rgba(255,255,255,0.04);
+      --accent-1: #ff416c; /* pink-red */
+      --accent-2: #2bced6; /* aqua */
+      --accent-3: #ffc857; /* warm yellow */
+      --muted: #9aa5b1;
+      --light:#f6f8fb;
+      --radius:14px;
+      --shadow: 0 10px 30px rgba(2,6,23,0.5);
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:
+      radial-gradient(1200px 400px at 10% 10%, rgba(43,206,214,0.08), transparent 5%),
+      radial-gradient(900px 300px at 90% 85%, rgba(255,65,108,0.06), transparent 5%),
+      linear-gradient(180deg,#07101a,#071827 60%,#07101a);
+      color:#e6f0f6}
+    a{color:inherit}
+    header{position:sticky;top:0;z-index:60;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px);border-bottom:1px solid rgba(255,255,255,0.02)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#06121a}
+    .brand h1{font-size:18px;margin:0}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:600}
+    nav a.active{background:rgba(255,255,255,0.03);color:#eaf6ff}
+
+    main.container{max-width:1200px;margin:20px auto;padding:18px}
+    .hero{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:center;margin-bottom:18px}
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:26px;border-radius:16px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.02)}
+    .hero h2{margin:0;font-size:26px}
+    .hero p{color:var(--muted);margin-top:8px}
+    .search-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+    .search-row input,.search-row select{padding:12px;border-radius:10px;border:none;background:rgba(0,0,0,0.25);color:#e6f0f6;min-width:160px}
+    .search-row .btn{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border:none;padding:12px 16px;border-radius:10px;color:#06121a;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(43,206,214,0.08)}
+
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .chip{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:999px;color:var(--muted);font-weight:600}
+
+    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+    .sidebar h4{margin:0 0 8px 0}
+    .range{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+    /* grid */
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+    .controls .left{display:flex;gap:8px;align-items:center}
+    .controls .right{display:flex;gap:8px;align-items:center}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.02);box-shadow:0 10px 30px rgba(2,6,23,0.45);transition:transform .22s,box-shadow .22s;cursor:pointer}
+    .card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(2,6,23,0.6)}
+    .card .imgwrap{position:relative;height:160px;background:#05121a}
+    .card img{width:100%;height:160px;object-fit:fill;display:block}
+    .badge{position:absolute;left:12px;top:12px;padding:8px 10px;border-radius:10px;font-weight:700;color:#06121a}
+    .badge.fuel{background:linear-gradient(90deg,var(--accent-2),var(--accent-3))}
+    .price-badge{position:absolute;right:12px;bottom:12px;padding:8px 10px;border-radius:10px;background:linear-gradient(90deg,var(--accent-1),#ff8a5b);font-weight:800;color:#06121a}
+
+    .card-body{padding:12px}
+    .title{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .title h3{margin:0;font-size:16px}
+    .muted{color:var(--muted);font-size:13px;margin-top:6px}
+    .meta{display:flex;gap:8px;margin-top:10px;align-items:center}
+    .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
+
+    /* compare bar */
+    .compare-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:linear-gradient(90deg,#06121a, rgba(255,255,255,0.02));padding:12px 18px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(2,6,23,0.5)}
+    .compare-bar button{background:linear-gradient(90deg,var(--accent-2),var(--accent-1));border:none;padding:8px 12px;border-radius:8px;color:#06121a;font-weight:800;cursor:pointer}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:90}
+    .modal{width:min(920px,96%);background:linear-gradient(180deg,#071827,#06121a);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(2,6,23,0.7);color:#e9fbff}
+    .modal .top{display:flex;gap:16px}
+    .modal img{width:420px;height:260px;object-fit:cover;border-radius:10px}
+    .modal .specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .spec-box{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px}
+
+    footer{margin-top:40px;padding:18px;text-align:center;color:var(--muted)}
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .modal .top{flex-direction:column}
+      .modal img{width:100%;height:220px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">MV</div>
+      <div>
+        <h1>MotoVia</h1>
+        <div style="font-size:12px;color:var(--muted)">A website where all reliable and excellent cars for sale</div>
+      </div>
+    </div>
+    <nav>
+      <a class="active">Home</a>
+      <a>Listings</a>
+      <a>About</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <h2>Discover your next ride</h2>
+        <p>Search, filter and compare curated selection of popular cars in India.</p>
+
+        <div class="search-row">
+          <input id="searchInput" placeholder="Search by brand or model (e.g., Creta, Swift, Nexon EV)" />
+          <select id="fuelSelect">
+            <option value="">All fuels</option>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="ev">Electric</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+          <select id="sortSelect">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="mileage-desc">Mileage: High → Low</option>
+          </select>
+          <button class="btn" id="searchBtn">Search</button>
+        </div>
+
+        <div class="filters">
+          <div class="chip">Popular: Creta • Seltos • Nexon • Swift</div>
+          <div class="chip">Excellent Cars At Affordable Price</div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <h4>Price Range</h4>
+        <div class="range">
+          <input id="minPrice" type="number" placeholder="Min (₹)" style="flex:1;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#e6f0f6"/>
+          <input id="maxPrice" type="number" placeholder="Max (₹)" style="width:120px;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#e6f0f6"/>
+        </div>
+
+        <h4 style="margin-top:12px">Fuel Type</h4>
+        <div class="tags">
+          <label style="cursor:pointer"><input type="checkbox" class="fuelCheck" value="petrol"> Petrol</label>
+          <label style="cursor:pointer"><input type="checkbox" class="fuelCheck" value="diesel"> Diesel</label>
+          <label style="cursor:pointer"><input type="checkbox" class="fuelCheck" value="ev"> EV</label>
+          <label style="cursor:pointer"><input type="checkbox" class="fuelCheck" value="hybrid"> Hybrid</label>
+        </div>
+
+        <h4 style="margin-top:12px">Compare</h4>
+        <div class="muted" style="font-size:13px">Select up to 2 cards to compare. Then click Compare.</div>
+      </aside>
+    </section>
+
+    <section style="margin-top:22px">
+      <div class="controls">
+        <div class="left"><h2 style="margin:0">Car Listings</h2></div>
+        <div class="right">
+          <div class="muted" id="resultCount">Suggested 32 cars</div>
+        </div>
+      </div>
+
+      <div id="grid" class="grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="compare-bar" id="compareBar" style="display:none">
+    <div id="compareList" style="display:flex;gap:12px;align-items:center;"></div>
+    <button id="compareBtn">Compare</button>
+  </div>
+
+  <div id="modalRoot" style="display:none"></div>
+
+  <footer>
+    <div style="max-width:900px;margin:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>MotoVia</strong><div class="muted">Marketplace which you can trust </div>
+        </div>
+        <div class="muted">Work By 11,14,33</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /***********************
+     * Dataset — 32 cars
+     * Mix of mainstream, EVs, luxury picks
+     ***********************/
+    const cars = [
+      {id:1, brand:"Maruti Suzuki", model:"Swift", price:315000, mileage:22, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/ku40egb_1840526.jpg?q=80", desc:"Popular hatchback: peppy engine, practical daily car.", seats:5, transmission:"Manual", emissions:110},
+      {id:2, brand:"Maruti Suzuki", model:"Baleno", price:640000, mileage:21, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/102663/baleno-exterior-right-front-three-quarter-71.jpeg?isig=0&q=80", desc:"Premium hatch with great space and features.", seats:5, transmission:"Automatic", emissions:115},
+      {id:3, brand:"Hyundai", model:"i20", price:780000, mileage:20, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/150603/i20-exterior-right-front-three-quarter-7.jpeg?isig=0&q=80", desc:"Stylish hatchback, modern interiors.", seats:5, transmission:"Automatic", emissions:120},
+      {id:4, brand:"Hyundai", model:"Creta", price:1050000, mileage:18, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/106815/creta-exterior-right-front-three-quarter-5.jpeg?isig=0&q=80", desc:"CRETA Hai Mere Bhaiii !!", seats:5, transmission:"Automatic", emissions:140},
+      {id:5, brand:"Kia", model:"Seltos", price:1250000, mileage:16, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/174323/seltos-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80", desc:"Feature-rich SUV with bold styling.", seats:5, transmission:"Automatic", emissions:130},
+      {id:6, brand:"Tata", model:"Nexon", price:850000, mileage:17, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/141867/nexon-exterior-right-front-three-quarter-78.jpeg?isig=0&q=80", desc:"Safe compact SUV with good value.", seats:5, transmission:"Manual", emissions:125},
+      {id:7, brand:"Tata", model:"Nexon EV", price:1500000, mileage:0, fuel:"ev", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/149311/nexon-ev-right-front-three-quarter-5.jpeg?isig=0&q=80", desc:"Popular electric SUV with good range.", seats:5, transmission:"Automatic", emissions:0},
+      {id:8, brand:"Mahindra", model:"Thar", price:1400000, mileage:15, fuel:"petrol", image:"https://stimg.cardekho.com/images/carexteriorimages/630x420/Mahindra/Thar/10741/1755775915560/front-left-side-47.jpg?tr=w-360", desc:"Iconic off-roader for adventure lovers.", seats:4, transmission:"Manual", emissions:200},
+      {id:9, brand:"Mahindra", model:"XUV700", price:1850000, mileage:13, fuel:"petrol", image:"https://imgd.aeplcdn.com/664x374/n/cw/ec/42355/xuv700-exterior-right-front-three-quarter-4.jpeg?isig=0&q=80", desc:"Feature-packed midsize SUV with strong performance.", seats:7, transmission:"Automatic", emissions:210},
+      {id:10, brand:"Toyota", model:"Fortuner", price:3500000, mileage:12, fuel:"diesel", image:"https://i.pinimg.com/736x/05/58/ff/0558ff6b9b44c78525fc308576289f36.jpg", desc:"Premium body-on-frame SUV with presence.", seats:7, transmission:"Automatic", emissions:220},
+      {id:11, brand:"Toyota", model:"Innova HyCross", price:2400000, mileage:16, fuel:"hybrid", image:"https://imgd.aeplcdn.com/1920x1080/n/cw/ec/115025/innova-hycross-exterior-right-front-three-quarter-73.jpeg?isig=0&q=80&q=80", desc:"Comfortable family MPV with hybrid tech.", seats:7, transmission:"Automatic", emissions:95},
+      {id:12, brand:"Honda", model:"City", price:1100000, mileage:18, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/143279/city-right-front-three-quarter-4.jpeg?isig=0&q=80", desc:"Popular sedan: comfort and refinement.", seats:5, transmission:"Automatic", emissions:125},
+      {id:13, brand:"Honda", model:"Amaze", price:730000, mileage:20, fuel:"petrol", image:"https://imgd.aeplcdn.com/1280x720/n/cw/ec/184377/amaze-exterior-right-front-three-quarter-4.jpeg?isig=0&q=80", desc:"Compact sedan with efficiency.", seats:5, transmission:"Manual", emissions:115},
+      {id:14, brand:"Kia", model:"Sonet", price:850000, mileage:18, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/174425/sonet-right-front-three-quarter-2.jpeg?isig=0&q=80", desc:"Small SUV with sporty attitude.", seats:5, transmission:"Automatic", emissions:130},
+      {id:15, brand:"Maruti Suzuki", model:"Brezza", price:930000, mileage:20, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/107807/brezza-right-front-three-quarter-2.jpeg?isig=0&q=80", desc:"Compact SUV and Maruti's bestseller.", seats:5, transmission:"Automatic", emissions:120},
+      {id:16, brand:"Maruti Suzuki", model:"Dzire", price:740000, mileage:23, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/170299/dzire-2024-right-front-three-quarter.jpeg?isig=0&q=80", desc:"Efficient compact sedan for city driving.", seats:5, transmission:"Manual", emissions:105},
+      {id:17, brand:"Hyundai", model:"Tucson", price:2400000, mileage:15, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/128163/tucson-right-front-three-quarter.jpeg?isig=0&q=80", desc:"Premium SUV with refined driving dynamics.", seats:5, transmission:"Automatic", emissions:165},
+      {id:18, brand:"Skoda", model:"Slavia", price:1200000, mileage:17, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/175957/slavia-right-front-three-quarter.jpeg?isig=0&q=80", desc:"Comfortable sedan with European feel.", seats:5, transmission:"Automatic", emissions:130},
+      {id:19, brand:"Volkswagen", model:"Taigun", price:1250000, mileage:16, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/144689/taigun-exterior-right-front-three-quarter-7.jpeg?isig=0&q=80", desc:"Solid built SUV from VW.", seats:5, transmission:"Automatic", emissions:135},
+      {id:20, brand:"MG", model:"Hector", price:1500000, mileage:15, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/130639/hector-right-front-three-quarter-3.jpeg?isig=0&q=80", desc:"Large SUV with connected features.", seats:5, transmission:"Automatic", emissions:160},
+      {id:21, brand:"MG", model:"ZS EV", price:2100000, mileage:0, fuel:"ev", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/110437/zs-ev-exterior-right-front-three-quarter-69.jpeg?isig=0&q=80", desc:"Electric SUV offering zero emissions.", seats:5, transmission:"Automatic", emissions:0},
+      {id:22, brand:"Skoda", model:"Kushaq", price:1300000, mileage:16, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/175993/kushaq-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80", desc:"Stylish compact SUV with solid dynamics.", seats:5, transmission:"Automatic", emissions:135},
+      {id:23, brand:"Tata", model:"Harrier", price:1700000, mileage:14, fuel:"diesel", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/139245/harrier-facelift-right-front-three-quarter-4.jpeg?isig=0&q=80", desc:"Large SUV with bold design and comfort.", seats:5, transmission:"Automatic", emissions:190},
+      {id:24, brand:"Mahindra", model:"Scorpio-N", price:1300000, mileage:13, fuel:"diesel", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/128762/scorpio-classic-right-front-three-quarter-2.jpeg?isig=0&q=80", desc:"Tough SUV, popular among families.", seats:7, transmission:"Manual", emissions:205},
+      {id:25, brand:"Kia", model:"Carens", price:1100000, mileage:18, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/174327/carens-right-front-three-quarter-2.jpeg?isig=0&q=80", desc:"Versatile MPV with 7 seats.", seats:7, transmission:"Automatic", emissions:140},
+      {id:26, brand:"Audi", model:"Q3", price:4300000, mileage:12, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/28379/q3-exterior-right-front-three-quarter-93481.jpeg?isig=0&q=80", desc:"Premium compact SUV from Audi.", seats:5, transmission:"Automatic", emissions:200},
+      {id:27, brand:"BMW", model:"X1", price:4200000, mileage:13, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/140591/x1-exterior-right-front-three-quarter-7.jpeg?isig=0&q=80", desc:"Entry luxury SUV with dynamic drive.", seats:5, transmission:"Automatic", emissions:195},
+      {id:28, brand:"Mercedes-Benz", model:"C-Class", price:4900000, mileage:11, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/m9ecpdb_1746095.jpg?q=80", desc:"Executive sedan with refined luxury.", seats:5, transmission:"Automatic", emissions:210},
+      {id:29, brand:"Jeep", model:"Compass", price:2400000, mileage:14, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/47051/compass-exterior-right-front-three-quarter-83.jpeg?isig=0&q=80", desc:"Off-road capable premium compact SUV.", seats:5, transmission:"Automatic", emissions:170},
+      {id:30, brand:"Volkswagen", model:"Virtus", price:1500000, mileage:16, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/144681/virtus-exterior-right-front-three-quarter-10.jpeg?isig=0&q=80", desc:"Comfortable sedan with torque and pace.", seats:5, transmission:"Automatic", emissions:140},
+      {id:31, brand:"Tata", model:"Altroz", price:700000, mileage:18, fuel:"petrol", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/199865/altroz-facelift-right-front-three-quarter-2.jpeg?isig=0&q=80", desc:"Premium hatch with safety-first build.", seats:5, transmission:"Manual", emissions:125},
+      {id:32, brand:"Kia", model:"EV6 (Imported Demo)", price:4200000, mileage:0, fuel:"ev", image:"https://imgd-ct.aeplcdn.com/664x415/n/cw/ec/186467/ev6-right-front-three-quarter.jpeg?isig=0&q=80", desc:"Futuristic electric performance car (demo).", seats:5, transmission:"Automatic", emissions:0}
+    ];
+
+    /***********************
+     * UI Bindings & Helpers
+     ***********************/
+    const grid = document.getElementById('grid');
+    const searchInput = document.getElementById('searchInput');
+    const fuelSelect = document.getElementById('fuelSelect');
+    const sortSelect = document.getElementById('sortSelect');
+    const searchBtn = document.getElementById('searchBtn');
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+    const fuelChecks = document.querySelectorAll('.fuelCheck');
+    const resultCount = document.getElementById('resultCount');
+
+    let activeList = [...cars];
+    let compareSet = new Set();
+
+    function formatINR(n){
+      if(!n) return '—';
+      return '₹' + (n).toLocaleString('en-IN');
+    }
+
+    function renderGrid(list){
+      grid.innerHTML = '';
+      resultCount.textContent = `${list.length} cars`;
+      if(list.length === 0){ grid.innerHTML = '<div class="muted">No cars found for these filters.</div>'; return; }
+      list.forEach(car=>{
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `
+          <div class="imgwrap">
+            <img src="${car.image}" alt="${car.brand} ${car.model}">
+            <div class="badge fuel">${car.fuel.toUpperCase()}</div>
+            <div class="price-badge">${formatINR(car.price)}</div>
+          </div>
+          <div class="card-body">
+            <div class="title">
+              <h3>${car.brand} ${car.model}</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted)">
+                  <input type="checkbox" data-id="${car.id}" class="compareCheck" ${compareSet.has(car.id)?'checked':''}/>
+                  Compare
+                </label>
+                <button data-id="${car.id}" class="viewBtn" style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));border:none;padding:8px 10px;border-radius:8px;font-weight:800;color:#06121a;cursor:pointer">View</button>
+              </div>
+            </div>
+            <div class="muted">${car.transmission} • Seats ${car.seats}</div>
+            <div class="meta">
+              <div class="tag">${car.mileage>0?car.mileage + ' kmpl':'EV'}</div>
+              <div class="tag">${car.fuel.toUpperCase()}</div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(el);
+      });
+
+      // wire view and compare after rendering
+      document.querySelectorAll('.viewBtn').forEach(b => b.addEventListener('click', e=>{
+        const id = Number(e.currentTarget.dataset.id);
+        openModal(id);
+      }));
+
+      document.querySelectorAll('.compareCheck').forEach(cb=>{
+        cb.addEventListener('change', (e)=>{
+          const id = Number(e.currentTarget.dataset.id);
+          if(e.currentTarget.checked){
+            if(compareSet.size >= 2){
+              alert('You can compare up to 2 cars');
+              e.currentTarget.checked = false;
+              return;
+            }
+            compareSet.add(id);
+          } else compareSet.delete(id);
+          refreshCompareBar();
+        });
+      });
+    }
+
+    function applyFilters(){
+      const q = searchInput.value.trim().toLowerCase();
+      const fuel = fuelSelect.value;
+      const sort = sortSelect.value;
+      const min = Number(minPrice.value) || 0;
+      const max = Number(maxPrice.value) || Infinity;
+
+      // fuel checkbox filters (if any checked, they act as override)
+      const checkedFuel = Array.from(document.querySelectorAll('.fuelCheck:checked')).map(x=>x.value);
+
+      let list = cars.filter(c=>{
+        const matchesQuery = !q || (c.brand + ' ' + c.model + ' ' + c.desc).toLowerCase().includes(q);
+        const matchesFuel = (checkedFuel.length? checkedFuel.includes(c.fuel) : (fuel? c.fuel===fuel : true));
+        const matchesPrice = c.price >= min && c.price <= max;
+        return matchesQuery && matchesFuel && matchesPrice;
+      });
+
+      if(sort === 'price-asc') list.sort((a,b)=>a.price - b.price);
+      else if(sort === 'price-desc') list.sort((a,b)=>b.price - a.price);
+      else if(sort === 'mileage-desc') list.sort((a,b)=> (b.mileage||0) - (a.mileage||0));
+      else list = list; // featured - default order
+
+      activeList = list;
+      renderGrid(list);
+    }
+
+    // modal (details)
+    function openModal(id){
+      const car = cars.find(c=>c.id===id);
+      if(!car) return;
+      const root = document.getElementById('modalRoot');
+      root.innerHTML = `
+        <div class="modal-backdrop" id="modalBackdrop">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <h3 style="margin:0">${car.brand} ${car.model}</h3>
+                <div class="muted" style="margin-top:6px">${car.desc}</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="text-align:right">
+                  <div style="font-size:14px;color:var(--muted)">Price</div>
+                  <div style="font-weight:800;font-size:18px">${formatINR(car.price)}</div>
+                </div>
+                <button id="closeModal" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:#eaf6ff;padding:8px 12px;border-radius:8px;cursor:pointer">Close</button>
+              </div>
+            </div>
+
+            <div class="top" style="margin-top:12px">
+              <img src="${car.image}" alt="${car.brand} ${car.model}" />
+              <div style="flex:1;padding-left:12px">
+                <div style="display:flex;gap:10px;align-items:center">
+                  <div style="background:linear-gradient(90deg,var(--accent-2),var(--accent-1));padding:10px;border-radius:10px;font-weight:800;color:#06121a">${car.fuel.toUpperCase()}</div>
+                  <div style="color:var(--muted)">${car.transmission} • Seats ${car.seats}</div>
+                </div>
+
+                <div class="specs">
+                  <div class="spec-box"><strong>Mileage</strong><div class="muted">${car.mileage>0?car.mileage+' kmpl':'N/A'}</div></div>
+                  <div class="spec-box"><strong>Emissions</strong><div class="muted">${car.emissions?car.emissions+' g/km':'—'}</div></div>
+                  <div class="spec-box"><strong>Transmission</strong><div class="muted">${car.transmission}</div></div>
+                  <div class="spec-box"><strong>Seats</strong><div class="muted">${car.seats}</div></div>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Overview</strong>
+                  <p class="muted" style="margin-top:6px">${car.desc} — Approx. showroom price shown.</p>
+                </div>
+
+                <div style="margin-top:12px;display:flex;gap:8px">
+                  <button id="inquireBtn" style="background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border:none;padding:10px 14px;border-radius:8px;font-weight:800;color:#06121a;cursor:pointer">Inquire</button>
+                  <button id="addCompare" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:8px;color:#eaf6ff;cursor:pointer">${ compareSet.has(car.id)?'Remove Compare':'Add to Compare' }</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      root.style.display = 'block';
+      document.getElementById('modalBackdrop').addEventListener('click', (ev)=>{
+        if(ev.target.id === 'modalBackdrop') closeModal();
+      });
+      document.getElementById('closeModal').addEventListener('click', closeModal);
+      document.getElementById('inquireBtn').addEventListener('click', ()=>{ alert('Request accepted. Our team shall reach you soon :)'); });
+      document.getElementById('addCompare').addEventListener('click', (e)=>{
+        if(compareSet.has(car.id)) compareSet.delete(car.id);
+        else {
+          if(compareSet.size >= 2) { alert('Compare limit: 2 cars'); return; }
+          compareSet.add(car.id);
+        }
+        refreshCompareBar();
+        closeModal();
+      });
+    }
+    function closeModal(){ document.getElementById('modalRoot').style.display='none'; document.getElementById('modalRoot').innerHTML=''; }
+
+    // compare bar
+    const compareBar = document.getElementById('compareBar');
+    const compareList = document.getElementById('compareList');
+    const compareBtn = document.getElementById('compareBtn');
+
+    function refreshCompareBar(){
+      compareList.innerHTML = '';
+      if(compareSet.size === 0) compareBar.style.display = 'none';
+      else {
+        compareBar.style.display = 'flex';
+        compareSet.forEach(id=>{
+          const car = cars.find(c=>c.id===id);
+          const el = document.createElement('div');
+          el.style.display='flex';el.style.gap='8px';el.style.alignItems='center';
+          el.innerHTML = `<div style="width:44px;height:28px;border-radius:6px;overflow:hidden"><img src="${car.image}" style="width:44px;height:28px;object-fit:cover"/></div><div style="font-size:13px">${car.brand} ${car.model}</div><button data-id="${id}" style="background:transparent;border:none;color:#ff7a7a;cursor:pointer;font-weight:700">×</button>`;
+          compareList.appendChild(el);
+          el.querySelector('button').addEventListener('click', ()=>{
+            compareSet.delete(id);
+            document.querySelectorAll('.compareCheck').forEach(cb=>{ if(Number(cb.dataset.id)===id) cb.checked=false });
+            refreshCompareBar();
+            renderGrid(activeList);
+          });
+        });
+      }
+    }
+
+    compareBtn.addEventListener('click', ()=>{
+      if(compareSet.size < 2){ alert('Select 2 cars to compare'); return; }
+      const ids = Array.from(compareSet);
+      openCompare(ids[0], ids[1]);
+    });
+
+    function openCompare(aId, bId){
+      const a = cars.find(c=>c.id===aId);
+      const b = cars.find(c=>c.id===bId);
+      const root = document.getElementById('modalRoot');
+      root.innerHTML = `
+        <div class="modal-backdrop" id="compareBackdrop">
+          <div class="modal" role="dialog" aria-modal="true">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h3 style="margin:0">Compare: ${a.brand} ${a.model}  <span style="opacity:.6">vs</span> ${b.brand} ${b.model}</h3>
+              <button id="closeCompare" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:#eaf6ff;padding:8px 12px;border-radius:8px;cursor:pointer">Close</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+              <div style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px">
+                <img src="${a.image}" style="width:100%;height:180px;object-fit:cover;border-radius:8px"/>
+                <h4 style="margin:8px 0">${a.brand} ${a.model}</h4>
+                <div><strong>Price:</strong> ${formatINR(a.price)}</div>
+                <div><strong>Fuel:</strong> ${a.fuel}</div>
+                <div><strong>Mileage:</strong> ${a.mileage>0?a.mileage+' kmpl':'EV'}</div>
+                <div><strong>Transmission:</strong> ${a.transmission}</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px">
+                <img src="${b.image}" style="width:100%;height:180px;object-fit:cover;border-radius:8px"/>
+                <h4 style="margin:8px 0">${b.brand} ${b.model}</h4>
+                <div><strong>Price:</strong> ${formatINR(b.price)}</div>
+                <div><strong>Fuel:</strong> ${b.fuel}</div>
+                <div><strong>Mileage:</strong> ${b.mileage>0?b.mileage+' kmpl':'EV'}</div>
+                <div><strong>Transmission:</strong> ${b.transmission}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      root.style.display = 'block';
+      document.getElementById('closeCompare').addEventListener('click', ()=>{
+        root.style.display='none'; root.innerHTML='';
+      });
+    }
+
+    // init
+    renderGrid(cars);
+    activeList = cars.slice();
+    refreshCompareBar();
+
+    // events
+    searchBtn.addEventListener('click', applyFilters);
+    sortSelect.addEventListener('change', applyFilters);
+    fuelSelect.addEventListener('change', applyFilters);
+    minPrice.addEventListener('change', applyFilters);
+    maxPrice.addEventListener('change', applyFilters);
+    document.querySelectorAll('.fuelCheck').forEach(x => x.addEventListener('change', applyFilters));
+    searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') applyFilters(); });
+
+    // Small UX: lazy image loading for better performance (demo)
+    document.addEventListener('scroll', ()=> {
+      document.querySelectorAll('img').forEach(img=>{
+        if(img.dataset.src && img.getBoundingClientRect().top < window.innerHeight + 200){
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
